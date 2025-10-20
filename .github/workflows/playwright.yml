@@ -1,0 +1,60 @@
+name: Playwright E2E CI
+
+on:
+  # Run Smoke on every Pull Request
+  pull_request:
+    branches: [ main, master ]
+  # Run Regression nightly
+  schedule:
+    - cron: "0 2 * * *" # Every day at 2 AM UTC
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Run Playwright Tests
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: |
+          npm ci
+          npx playwright install --with-deps
+
+      # 🧪 Run Smoke on PRs
+      - name: Run Smoke Suite
+        if: ${{ github.event_name == 'pull_request' }}
+        run: npm run test:smoke -- --project=${{ matrix.browser }} --reporter=line,allure-playwright,html
+
+      # 🧪 Run Regression nightly
+      - name: Run Regression Suite
+        if: ${{ github.event_name == 'schedule' }}
+        run: npm run test:regression -- --project=${{ matrix.browser }} --reporter=line,allure-playwright,html
+
+      # 🧾 Upload Allure results
+      - name: Upload Allure Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results-${{ matrix.browser }}
+          path: allure-results
+
+      # 🧾 Upload HTML report
+      - name: Upload HTML Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: html-report-${{ matrix.browser }}
+          path: playwright-report
