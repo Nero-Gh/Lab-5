@@ -16,7 +16,6 @@ test.describe("Leave Module", () => {
     leavePage = new LeavePage(page);
   });
 
-  // TC-LEAVE-001
   test("TC-LEAVE-001: Verify employee can apply for leave", async () => {
     await leavePage.applyLeave(
       "CAN - Personal",
@@ -27,7 +26,6 @@ test.describe("Leave Module", () => {
     await leavePage.expectLeaveApplied();
   });
 
-  // TC-LEAVE-002
   test("TC-LEAVE-002: Verify employee cannot apply for leave with invalid date range", async () => {
     await leavePage.applyLeave(
       "CAN - Personal",
@@ -37,19 +35,16 @@ test.describe("Leave Module", () => {
     await leavePage.expectInvalidDateError();
   });
 
-  // TC-LEAVE-003
   test("TC-LEAVE-003: Verify Manager can approve leave request", async () => {
     await leavePage.gotoLeaveList();
     await leavePage.approvePendingLeave();
   });
 
-  // TC-LEAVE-004
   test("TC-LEAVE-004: Verify leave status updates correctly for employee", async () => {
     await leavePage.gotoMyLeave();
     await leavePage.expectLeaveInList("Approved");
   });
 
-  // TC-LEAVE-005
   test("TC-LEAVE-005: Verify employee cannot apply leave beyond available balance", async () => {
     await leavePage.applyLeave(
       "CAN - Vacation",
