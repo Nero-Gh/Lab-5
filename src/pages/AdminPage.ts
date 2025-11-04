@@ -4,7 +4,7 @@ export class AdminPage {
   constructor(private page: Page) {}
 
   async openAdminModule() {
-    await this.page.click('span:has-text("Admin")');
+    await this.page.click("span:has-text(data.data.users.valid.username)");
   }
 
   async changeUserRole(username: string, role: string) {

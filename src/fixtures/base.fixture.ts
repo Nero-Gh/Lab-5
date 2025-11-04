@@ -3,12 +3,15 @@ import { LoginPage } from "../pages/LoginPage";
 import { EmployeePage } from "../pages/EmployeePage";
 import { LeavePage } from "../pages/LeavePage";
 import { AdminPage } from "../pages/AdminPage";
+import { TestFixtures } from "../model/model";
+import testData from "./testData.json";
 
 export const test = base.extend<{
   loginPage: LoginPage;
   employeePage: EmployeePage;
   leavePage: LeavePage;
   adminPage: AdminPage;
+  data: TestFixtures;
 }>({
   loginPage: async ({ page }, use) => {
     await use(new LoginPage(page));
@@ -21,6 +24,9 @@ export const test = base.extend<{
   },
   adminPage: async ({ page }, use) => {
     await use(new AdminPage(page));
+  },
+  data: async ({}, use) => {
+    await use(testData as unknown as TestFixtures);
   },
 });
 

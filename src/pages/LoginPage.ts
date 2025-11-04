@@ -11,10 +11,6 @@ export class LoginPage {
     await this.page.goto("/");
   }
 
-  /**
-   * Clicks login and waits for either a dashboard indicator or an error/validation
-   * Uses tolerant waits because OrangeHRM loads dynamically.
-   */
   async login(username: string, password: string) {
     await this.page.fill('input[name="username"]', username);
     await this.page.fill('input[name="password"]', password);
@@ -41,16 +37,11 @@ export class LoginPage {
     ]);
   }
 
-  /** Waits and asserts that Dashboard is visible (successful login). */
   async expectDashboardVisible() {
-    await this.page
-      .locator("text=Dashboard")
-      .first()
-      .waitFor({ state: "visible", timeout: 8000 });
+    await this.page.locator("text=Dashboard").first();
     await expect(this.page.locator("text=Dashboard").first()).toBeVisible();
   }
 
-  /** Waits for either the global invalid-credentials alert or any visible alert */
   async expectLoginError() {
     const global = this.page.locator(".oxd-alert-content");
     if ((await global.count()) > 0) {
@@ -66,10 +57,6 @@ export class LoginPage {
     ).toBeVisible();
   }
 
-  /**
-   * Specifically check for inline Required validation messages displayed on empty fields.
-   * This is used for TC-AUTH-004.
-   */
   async expectEmptyFieldValidation() {
     const requiredMsg = this.page.locator(
       '.oxd-input-field-error-message:has-text("Required")'
@@ -78,12 +65,10 @@ export class LoginPage {
     await expect(requiredMsg.first()).toBeVisible();
   }
 
-  /** Returns the input type of the password field (should be "password"). */
   async getPasswordInputType(): Promise<string | null> {
     return await this.page.getAttribute('input[name="password"]', "type");
   }
 
-  /** Clicks the "Forgot your password?" link and waits for reset page to load. */
   async clickForgotPassword() {
     await this.page.getByText("Forgot your password?").click();
 
@@ -94,7 +79,6 @@ export class LoginPage {
       .catch(() => null);
   }
 
-  /** Verifies the reset password page is visible. */
   async expectResetPasswordPageVisible() {
     await this.page
       .locator("text=Reset Password")

@@ -10,9 +10,12 @@ test.describe("Leave Module", () => {
 
   const formatDate = (d: Date) => d.toISOString().split("T")[0];
 
-  test.beforeEach(async ({ page, loginPage }) => {
+  test.beforeEach(async ({ page, loginPage, data }) => {
     await loginPage.goto();
-    await loginPage.login("Admin", "admin123");
+    await loginPage.login(
+      data.data.users.valid.username,
+      data.data.users.valid.password
+    );
     leavePage = new LeavePage(page);
   });
 

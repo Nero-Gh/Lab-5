@@ -11,8 +11,12 @@ test.describe("Authentication Module", () => {
 
   test("TC-AUTH-001: Verify user can login with valid credentials @smoke", async ({
     page,
+    data,
   }) => {
-    await loginPage.login("Admin", "admin123");
+    await loginPage.login(
+      data.data.users.valid.username,
+      data.data.users.valid.password
+    );
     await loginPage.expectDashboardVisible();
 
     await expect(page).toHaveScreenshot("dashboard-valid-login.png", {
